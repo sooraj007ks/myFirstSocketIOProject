@@ -1,5 +1,17 @@
 let socket = io();
 
+$(document).ready(function(){
+    $('#message-form').on('submit', function(e){
+        e.preventDefault();
+        socket.emit('createMessage', {
+            from: $('#user').val(),
+            text: $('[name=message]').val()
+        }, function(data){
+            console.log(data.text);
+        });
+    });
+});
+
 socket.on('connect', function(){
     console.log("Connected to Server");
     // socket.emit('createEmail', {
@@ -8,16 +20,18 @@ socket.on('connect', function(){
     //     createdAt: new Date()
     // });
 
-    socket.emit('createMessage', {
-        from:"newmsg@gmail.com",
-        text:"hey there"
-    });
+    // socket.emit('createMessage', {
+    //     from:"Frank",
+    //     text:"hey there"
+    // }, function(data){
+    //     console.log('Got it ' + data.text);
+    // });
 
     // socket.on('joined_', function(msg){
     //     console.log(msg);
     // });
     socket.on('newMessage', function(msg){
-        console.log(msg);
+        $('#messages').append(`<li>${msg.from}: ${msg.text}</li>`);
     });
 
 });
