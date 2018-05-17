@@ -16,21 +16,51 @@ app.use(express.static(publicPath));
 io.on('connection', (socket)=>{
     console.log("New user connected");
 
+    ////////////////////////////
+    socket.emit('newMessage', {
+        from:"Admin",
+        text:"Welcome to the Chat App"
+    });
+    socket.broadcast.emit('newMessage', {
+        from:"Admin",
+        text:"New user joined",
+        createdAt: new Date().getTime()
+    });
+    ////////////////////////////
+
+
     // socket.emit('newEmail', {
     //     from:"mike@example.com",
     //     text:"Hello",
     //     createdAt: new Date()
     // });
 
-    socket.emit('newMsg', {
-        from:"testmsg@example.com",
-        text:"Hello, This is new msg from server",
-        createsAt: new Date()
-    });
+    // socket.emit('newMsg', {
+    //     from:"testmsg@example.com",
+    //     text:"Hello, This is new msg from server",
+    //     createsAt: new Date()
+    // });
 
-    socket.on('newMsgFromClient', (msg)=>{
-        console.log("New msg created by client", msg);
-    });
+        // io.emit for broadcasting a message
+    
+
+    // socket.on('newMsgFromClient', (msg)=>{
+    //     msg.createdAt = new Date().getTime();
+        // console.log("New msg created by client", msg);
+        // io.emit('newMsg', {
+        //     from:"newmsg@gmail.com",
+        //     text:"hey there",
+        //     createdAt: new Date().getTime()
+        // });
+        
+    // });
+    
+    // BROADCASTING
+    // socket.on('join_', (msg)=>{
+    //     console.log(msg);
+    //     socket.broadcast.emit('joined_', {text: `${msg.name} joined to chat`});
+    //     socket.emit('joined_self', {text: `Hello ${msg.name}`});
+    // });
 
     // socket.on('createEmail', (newEmail)=>{
     //     console.log('createEmail', newEmail);
