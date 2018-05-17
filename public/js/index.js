@@ -7,6 +7,10 @@ $(document).ready(function(){
             from: $('#user').val(),
             text: $('[name=message]').val()
         }, function(data){
+            // callback
+            $('#user').val("");
+            $('[name=message]').val("");
+
             console.log(data.text);
         });
     });
@@ -48,6 +52,12 @@ socket.on('connect', function(){
     // });
     socket.on('newMessage', function(msg){
         $('#messages').append(`<li>${msg.from}: ${msg.text}</li>`);
+    });
+
+    socket.on('newLocationMsg', function(link){
+        $('#messages').append(link.text);
+        console.log(link.text);
+        
     });
 
 });

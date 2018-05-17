@@ -1,28 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Socket IO Project</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-    <p>Welcome to Chat app</p>
-    <div class="messageArea">
-        <ol id="messages"></ol>
-    </div>
-    <form action="" id="message-form">
-        <input type="text" name="user" id="user" placeholder="User"/>
-        <input name="message" type="text" placeholder="Message"/>
-        <button>Send</button>
 
-    </form>
-    <button id="send-location">Send Location</button>
-    
+<body class="chat">
+
+    <div class="chat__sidebar">
+        <h3>People</h3>
+        <div id="users"></div>
+    </div>
+
+    <div class="chat__main">
+            <ol id="messages" class="chat__messages"></ol>
+        <div class="chat__footer">
+            <form action="" id="message-form">
+                <input type="text" name="user" id="user" placeholder="User" />
+                <input name="message" type="text" placeholder="Message" />
+                <button>Send</button>
+
+            </form>
+            <button id="send-location">Send Location</button>
+
+        </div>
+
+    </div>
+
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/jquery-3.3.1.min.js"></script>
-    <script src="/js/index.js">    </script>
-        
+    <script src="/js/index.js">
+    </script>
+
 
 </body>
+
 </html>

@@ -34,13 +34,19 @@ io.on('connection', (socket)=>{
         });
     });
         
-    ////////////////////////////
+    ////////////////////////////////////////////////////////
+
+    // GEO LOCATION
     socket.on('createLocationMsg', (coords)=>{
         io.emit('newMessage', generateMessage("Admin", 
         `Latitude:${coords.latitude} Longitude:${coords.longitude}`));
+        io.emit('newLocationMsg', {
+            text:`<li><a href="https://www.google.com/maps?q=${coords.latitude},
+        ${coords.longitude}" target="blank_"> New Users Location</a></li>`
+        });
     });    
 
-    ////////////////////////////
+    ////////////////////////////////////////////////////////
 
 
 
