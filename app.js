@@ -11,21 +11,26 @@ const app = express();
 const server = http.createServer(app); // For integrating with Socket.io
 const io = socketIO(server);
 
+const { generateMessage } = require('./utils/message');
+
 app.use(express.static(publicPath));
 
 io.on('connection', (socket)=>{
     console.log("New user connected");
 
     ////////////////////////////
-    socket.emit('newMessage', {
-        from:"Admin",
-        text:"Welcome to the Chat App"
+
+    socket.emit('newMessage', generateMessage(
+        "Admin","Welcome to the Chat App"));
+
+    socket.broadcast.emit('newMessage', generateMessage(
+        "Admin","New user joined"));
+
+    socket.on('createMessage', (msg)=>{
+        console.log('createMessage', msg);
+        io.emit('newMessage', generateMessage(msg.from, msg.text));
     });
-    socket.broadcast.emit('newMessage', {
-        from:"Admin",
-        text:"New user joined",
-        createdAt: new Date().getTime()
-    });
+        
     ////////////////////////////
 
 

@@ -8,10 +8,10 @@ socket.on('connect', function(){
     //     createdAt: new Date()
     // });
 
-    // socket.emit('newMsgFromClient', {
-    //     from:"newmsg@gmail.com",
-    //     text:"hey there"
-    // });
+    socket.emit('createMessage', {
+        from:"newmsg@gmail.com",
+        text:"hey there"
+    });
 
     // socket.on('joined_', function(msg){
     //     console.log(msg);
