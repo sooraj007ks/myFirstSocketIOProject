@@ -35,6 +35,13 @@ io.on('connection', (socket)=>{
     });
         
     ////////////////////////////
+    socket.on('createLocationMsg', (coords)=>{
+        io.emit('newMessage', generateMessage("Admin", 
+        `Latitude:${coords.latitude} Longitude:${coords.longitude}`));
+    });    
+
+    ////////////////////////////
+
 
 
     // socket.emit('newEmail', {

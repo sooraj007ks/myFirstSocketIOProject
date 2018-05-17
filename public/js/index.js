@@ -10,6 +10,22 @@ $(document).ready(function(){
             console.log(data.text);
         });
     });
+
+    let locationBtn = $('#send-location');
+    locationBtn.on('click', function(){
+        if(!navigator.geolocation){
+            return alert('Geolocation not supported by your browser');
+        }
+        navigator.geolocation.getCurrentPosition(function(position){
+            // console.log(position);
+            let { latitude, longitude } = position.coords;
+            socket.emit('createLocationMsg', {
+                latitude, longitude
+            });
+        }, function(err){
+            alert('Unable to fetch location');
+        });
+    });
 });
 
 socket.on('connect', function(){
