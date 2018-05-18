@@ -20,13 +20,16 @@ $(document).ready(function(){
         if(!navigator.geolocation){
             return alert('Geolocation not supported by your browser');
         }
+        locationBtn.attr('disabled', 'disabled').text('Sending Location...');
         navigator.geolocation.getCurrentPosition(function(position){
             // console.log(position);
+            locationBtn.removeAttr('disabled').text('Send location');
             let { latitude, longitude } = position.coords;
             socket.emit('createLocationMsg', {
                 latitude, longitude
             });
         }, function(err){
+            locationBtn.removeAttr('disabled').text('Send location');
             alert('Unable to fetch location');
         });
     });
@@ -50,13 +53,42 @@ socket.on('connect', function(){
     // socket.on('joined_', function(msg){
     //     console.log(msg);
     // });
+    
+    let getFormattedTime_ = function(timestamp){
+        date = new Date(timestamp);
+        hour = date.getHours();
+        date_ = (hour <= 12) ? {amOrPm: 'am', hour}:  
+                {amOrPm: 'pm', hour: hour - 12};
+        minutes = date.getMinutes();
+        minutes_ = (minutes < 10) ? `${0}minutes` : minutes;
+        return `${date_.hour}:${minutes_} ${date_.amOrPm}`;
+    };
+
     socket.on('newMessage', function(msg){
-        $('#messages').append(`<li>${msg.from}: ${msg.text}</li>`);
+        frTime = getFormattedTime_(msg.createdAt);
+        var template = $('#message-template').html();
+        var html = Mustache.render(template,{
+            text: msg.text,
+            from: msg.from,
+            createdAt: frTime
+        });
+        $('#messages').append(html);
+
+        //// frTime = moment(msg.createdAt).format('h:mm a');
+        // $('#messages').append(`<li>${msg.from} ${frTime}: ${msg.text}</li>`);
     });
 
-    socket.on('newLocationMsg', function(link){
-        $('#messages').append(link.text);
-        console.log(link.text);
+    socket.on('newLocationMsg', function(data){
+        var frTime = getFormattedTime_(data.createdAt);
+        var template = $('#location-message-template').html();
+        var html = Mustache.render(template,{
+            lat : data.lat,
+            long: data.long,
+            text: data.text,
+            from: data.from,
+            createdAt: frTime
+        });
+        $('#messages').append(html);
         
     });
 
