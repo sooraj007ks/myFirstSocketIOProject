@@ -60,7 +60,7 @@ socket.on('connect', function(){
         date_ = (hour <= 12) ? {amOrPm: 'am', hour}:  
                 {amOrPm: 'pm', hour: hour - 12};
         minutes = date.getMinutes();
-        minutes_ = (minutes < 10) ? `${0}minutes` : minutes;
+        minutes_ = (minutes < 10) ? `${0}${minutes}` : minutes;
         return `${date_.hour}:${minutes_} ${date_.amOrPm}`;
     };
 

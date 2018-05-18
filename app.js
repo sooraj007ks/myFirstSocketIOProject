@@ -41,12 +41,8 @@ io.on('connection', (socket)=>{
         data = generateMessage("Admin", "Location data");
         data.lat = coords.latitude;
         data.long = coords.longitude;
-        console.log(data);
-        // `Latitude:${coords.latitude} Longitude:${coords.longitude}`);
         io.emit('newLocationMsg', data);
-        // io.emit('newLocationMsg', {
-        //     text:`<li><a href="https://www.google.com/maps?q=${coords.latitude},
-        // ${coords.longitude}" target="blank_"> New Users Location</a></li>`
+        
     });
        
 
