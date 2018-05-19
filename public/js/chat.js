@@ -16,6 +16,17 @@ function scrollToBottom(){
         }
 }
 
+function parseQs(qs) {
+    var items = qs.split('?')[1].split('&');
+    data = {};
+    items.forEach((item) => {
+        let [ key, val ] = item.split('=');
+        val = val.replace(/\+/g, '%20');
+        data[key] = decodeURIComponent(val);
+    });
+    return data;
+}
+
 $(document).ready(function(){
     $('#message-form').on('submit', function(e){
         e.preventDefault();
@@ -53,6 +64,16 @@ $(document).ready(function(){
 
 socket.on('connect', function(){
     console.log("Connected to Server");
+
+    var params = parseQs(window.location.search);
+    socket.emit('join', params, function(err){
+        if(err){
+            alert(err);
+            window.location.href = '/';
+        }else{
+            console.log("No Error");
+        }
+    });
     // socket.emit('createEmail', {
     //     from:"client@example.com",
     //     text:"Hello",
@@ -90,6 +111,15 @@ socket.on('connect', function(){
         });
         $('#messages').append(html);
         scrollToBottom();
+    });
+
+    socket.on('updateUserList', function(users){
+        var ol = $('<ol></ol>');
+        users.forEach(function(user){
+            ol.append(`<li>${user}</li>`);
+        });
+        $('#users').html(ol);
+       
     });
 
     socket.on('newLocationMsg', function(data){

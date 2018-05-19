@@ -11,7 +11,12 @@ const app = express();
 const server = http.createServer(app); // For integrating with Socket.io
 const io = socketIO(server);
 
+
+const { isRealString } = require('./utils/validation');
 const { generateMessage } = require('./utils/message');
+const { Users } = require('./utils/users');
+
+var users = new Users();
 
 app.use(express.static(publicPath));
 
@@ -20,11 +25,11 @@ io.on('connection', (socket)=>{
 
     ////////////////////////////
 
-    socket.emit('newMessage', generateMessage(
-        "Admin","Welcome to the Chat App"));
+    // socket.emit('newMessage', generateMessage(
+    //     "Admin","Welcome to the Chat App"));
 
-    socket.broadcast.emit('newMessage', generateMessage(
-        "Admin","New user joined"));
+    // socket.broadcast.emit('newMessage', generateMessage(
+    //     "Admin","New user joined"));
 
     socket.on('createMessage', (msg, callback)=>{
         console.log('createMessage', msg);
@@ -47,9 +52,32 @@ io.on('connection', (socket)=>{
        
 
     ////////////////////////////////////////////////////////
+    // Joining rooms
+    socket.on('join',(params, callback) =>{
+        if (!isRealString(params.name) && !isRealString(params.room)){
+            return callback('Name and Room name are required');
+        }
+        var room = params.room;
+
+        socket.join(room); // socket.leave -> to leave a group
+
+        users.removeUser(socket.id); // remove from other rooms before joining new room.
+        users.addUser(socket.id, params.name, params.room);
+
+        io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+
+        socket.emit('newMessage', generateMessage(
+            "Admin","Welcome to the Chat App"));
+    
+        socket.broadcast.to(room).emit('newMessage', generateMessage(
+            "Admin",`${params.name} has joined the group`));
+            
+        callback();
+    });
 
 
 
+    ////////////////////////////////////////////////////////
     // socket.emit('newEmail', {
     //     from:"mike@example.com",
     //     text:"Hello",
@@ -88,7 +116,16 @@ io.on('connection', (socket)=>{
     // });
 
     socket.on('disconnect', ()=>{
-        console.log("Client Disconnected");
+        var user = users.removeUser(socket.id);
+        
+        if (user){
+            io.to(user.room).emit('updateUserList', 
+                users.getUserList(user.room));
+
+            io.to(user.room).emit('newMessage', 
+                generateMessage("Admin", `${user.name} has left the room`));
+        }
+
     });
 });
 
