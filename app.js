@@ -32,8 +32,11 @@ io.on('connection', (socket)=>{
     //     "Admin","New user joined"));
 
     socket.on('createMessage', (msg, callback)=>{
-        console.log('createMessage', msg);
-        io.emit('newMessage', generateMessage(msg.from, msg.text));
+        var user = users.getUser(socket.id);
+        if (user && isRealString(msg.text)){
+            io.to(user.room).emit('newMessage', generateMessage(user.name, msg.text));
+
+        }
         callback({
             text: `Hello ${msg.from}, your message sent successfully`
         });
@@ -43,10 +46,15 @@ io.on('connection', (socket)=>{
 
     // GEO LOCATION
     socket.on('createLocationMsg', (coords)=>{
-        data = generateMessage("Admin", "Location data");
-        data.lat = coords.latitude;
-        data.long = coords.longitude;
-        io.emit('newLocationMsg', data);
+        var user = users.getUser(socket.id);
+        if (user && coords){
+            data = generateMessage(user.name, "Location data");
+            data.lat = coords.latitude;
+            data.long = coords.longitude;
+            data.user = user.name;
+            io.to(user.room).emit('newLocationMsg', data);
+        }
+        
         
     });
        

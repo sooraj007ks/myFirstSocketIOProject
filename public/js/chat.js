@@ -31,7 +31,6 @@ $(document).ready(function(){
     $('#message-form').on('submit', function(e){
         e.preventDefault();
         socket.emit('createMessage', {
-            from: $('#user').val(),
             text: $('[name=message]').val()
         }, function(data){
             // callback
@@ -74,22 +73,7 @@ socket.on('connect', function(){
             console.log("No Error");
         }
     });
-    // socket.emit('createEmail', {
-    //     from:"client@example.com",
-    //     text:"Hello",
-    //     createdAt: new Date()
-    // });
-
-    // socket.emit('createMessage', {
-    //     from:"Frank",
-    //     text:"hey there"
-    // }, function(data){
-    //     console.log('Got it ' + data.text);
-    // });
-
-    // socket.on('joined_', function(msg){
-    //     console.log(msg);
-    // });
+    
     
     let getFormattedTime_ = function(timestamp){
         date = new Date(timestamp);
@@ -130,7 +114,8 @@ socket.on('connect', function(){
             long: data.long,
             text: data.text,
             from: data.from,
-            createdAt: frTime
+            createdAt: frTime,
+            user: data.user
         });
         $('#messages').append(html);
                 scrollToBottom();
